@@ -1,6 +1,6 @@
 {
     "name": "blinq/openai",
-    "description": "OpenAI PHP Client is a PHP library wrapper for the OpenAI API.",
+    "description": "PHP library wrapper for the OpenAI API.",
     "type": "library",
     "license": "MIT",
     "authors": [
