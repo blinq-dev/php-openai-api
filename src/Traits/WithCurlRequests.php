@@ -4,6 +4,9 @@ namespace Blinq\LLM\Traits;
 
 trait WithCurlRequests
 {
+    public bool $shouldAbort = false;
+    public bool $isBusy = false;
+
     /**
      * Sends a JSON request to a specified URL.
      *
@@ -14,6 +17,8 @@ trait WithCurlRequests
      * @return array|null The parsed JSON response, or null on failure.
      */
     protected function sendJsonRequest(string $method, string $url, array $jsonData, array $headers = []) {
+        $this->isBusy = true;
+
         $curlOptions = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
@@ -25,6 +30,11 @@ trait WithCurlRequests
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_POSTFIELDS => json_encode($jsonData),
             CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_WRITEFUNCTION => function ($curl, $streamData) {
+                if ($this->shouldAbort) {
+                    return -1;
+                }
+            }
         ];
 
         if ($jsonData === []) {
@@ -52,6 +62,18 @@ trait WithCurlRequests
             $bodyParsed = null;
         }
 
+        $this->isBusy = false;
+
         return $bodyParsed;
+    }
+
+    public function cancelRequest()
+    {
+        $this->shouldAbort = true;
+    }
+
+    public function isBusy() : bool
+    {
+        return $this->isBusy;
     }
 }

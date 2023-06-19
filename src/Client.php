@@ -106,6 +106,16 @@ class Client
         return $message;
     }
 
+    public function cancelRequest()
+    {
+        $this->driver->cancelRequest();
+    }
+
+    public function isBusy() : bool
+    {
+        return $this->driver->isBusy();
+    }
+
     /**
      * Sets the system message in the chat history.
      *

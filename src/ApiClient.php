@@ -49,6 +49,10 @@ abstract class ApiClient
      * @return int The length of the handled data.
      */
     protected function handleStream($curl, $streamData) {
+        if ($this->shouldAbort) {
+            return -1;
+        }
+
         foreach(explode("data: ", $streamData) as $bodyParsed) {
             if (!$bodyParsed) continue;
 
