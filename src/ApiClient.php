@@ -50,6 +50,7 @@ abstract class ApiClient
      */
     protected function handleStream($curl, $streamData) {
         if ($this->shouldAbort) {
+            $this->shouldAbort = false;
             return -1;
         }
 
