@@ -54,6 +54,10 @@ abstract class ApiClient
             return -1;
         }
 
+        foreach($this->curlHandlers as $handler) {
+            $handler("stream", $streamData);
+        }
+
         foreach(explode("data: ", $streamData) as $bodyParsed) {
             if (!$bodyParsed) continue;
 

@@ -282,4 +282,17 @@ class Client
 
         return $this;
     }
+
+    /**
+     * Adds a handler for curl, first argument holds the type ("request" or "response"), second argument the data.
+     *
+     * @param callable $listener
+     * @return self
+     */
+    public function addCurlHandler(callable $listener) : self
+    {
+        $this->driver->addCurlHandler($listener);
+
+        return $this;
+    }
 }

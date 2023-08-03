@@ -7,6 +7,18 @@ trait WithCurlRequests
     public bool $shouldAbort = false;
     public bool $isBusy = false;
 
+    public array $curlHandlers = [];
+
+    /**
+     * Adds a new io handler to the client.
+     *
+     * @param callable $handler The handler function to add.
+     */
+    public function addCurlHandler(callable $handler)
+    {
+        $this->curlHandlers[] = $handler;
+    }
+
     /**
      * Sends a JSON request to a specified URL.
      *
@@ -48,8 +60,17 @@ trait WithCurlRequests
         $curl = curl_init();
 
         curl_setopt_array($curl, $curlOptions);
+
+        foreach($this->curlHandlers as $handler) {
+            $handler("request", $curlOptions);
+        }
+
         $body = curl_exec($curl);
         curl_close($curl);
+
+        foreach($this->curlHandlers as $handler) {
+            $handler("response", $body);
+        }
 
         try {
             $bodyParsed = json_decode($body, true);
